@@ -15,7 +15,9 @@ canvas.drag{cursor:grabbing}
 #now .sw{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin:0 3px 0 6px;border:1px solid rgba(255,255,255,.3)}
 #tools{margin-left:auto;display:flex;gap:6px;pointer-events:auto}
 button{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 10px;cursor:pointer;min-height:32px}
-button:hover{border-color:rgba(255,255,255,.35)}
+button:hover,a.btn:hover{border-color:rgba(255,255,255,.35)}
+a.btn{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 10px;min-height:32px;box-sizing:border-box;text-decoration:none;display:inline-flex;align-items:center}
+[hidden]{display:none!important}
 button:disabled{opacity:.35;cursor:not-allowed}
 #bottom{position:absolute;left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end}
 #pals{display:flex;gap:6px;overflow-x:auto;padding:6px;flex:1;min-width:0;scrollbar-width:thin}
@@ -59,6 +61,7 @@ button:disabled{opacity:.35;cursor:not-allowed}
       <div id="now"></div>
       <div class="sub">Drag to look · scroll / pinch to zoom · rings = walk</div></div>
     <div id="tools">
+      <a id="photos" class="btn" href="stills.html" hidden title="4K photos beside the design references">📷 Photos</a>
       <button id="prev" title="Toggle to the previous colour (P)">⇄ Previous</button>
       <button id="zin" class="opt" title="Zoom in">＋</button><button id="zout" class="opt" title="Zoom out">－</button>
       <button id="ib" title="Finish details">ⓘ</button>
@@ -292,6 +295,7 @@ window.addEventListener("keydown", e => {
 });
 $("fs").onclick = async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else await $("app").requestFullscreen(); } catch (e) { $("fs").disabled = true; } };
 window.addEventListener("resize", req);
+if (location.protocol !== "file:") fetch("stills.html", {method: "HEAD"}).then(r => { if (r.ok) $("photos").hidden = false; }).catch(() => {});   // photo page exists only on the shared site
 window.__viewer = st;     // for testing: state of position / palette / view
 if (gl) { requestAnimationFrame(frame); show(st.pos, st.pal); }
 </script>
