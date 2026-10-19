@@ -296,7 +296,7 @@ window.addEventListener("keydown", e => {
 $("fs").onclick = async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else await $("app").requestFullscreen(); } catch (e) { $("fs").disabled = true; } };
 window.addEventListener("resize", req);
 if (location.protocol !== "file:") fetch("stills.html", {method: "HEAD"}).then(r => { if (r.ok) $("photos").hidden = false; }).catch(() => {});   // photo page exists only on the shared site
-if (M.title) $("ttl").textContent = M.title;
+if (M.title) { $("ttl").textContent = M.title; if (!M.title.includes("Layout H")) document.title = M.title.split(" · ").slice(0, 2).join(" "); }
 window.__viewer = st;     // for testing: state of position / palette / view
 if (gl) { requestAnimationFrame(frame); show(st.pos, st.pal); }
 </script>
