@@ -169,7 +169,7 @@ async function show(pos, pal) {
   const k = `${pos}_${pal}`, my = ++token;
   if (!M.have.includes(k)) return;
   const busy = !texCache.has(k);
-  if (busy) { $("ltxt").textContent = `Loading ${pal} · ${M.palettes[pal].low} at ${M.positions[pos].name}…`; $("loading").classList.add("on"); mark(pal, true); }
+  if (busy) { $("ltxt").textContent = M.minimal ? `Loading ${M.positions[pos].name}…` : `Loading ${pal} · ${M.palettes[pal].low} at ${M.positions[pos].name}…`; $("loading").classList.add("on"); mark(pal, true); }
   try {
     await textureFor(k);
     if (my !== token) return;                         // a newer click won
@@ -181,6 +181,23 @@ async function show(pos, pal) {
     if (my === token) { $("ltxt").textContent = "Could not load " + k; setTimeout(() => $("loading").classList.remove("on"), 2500); }
     return;
   } finally { if (my === token) { $("loading").classList.remove("on"); mark(pal, false); } }
+}
+// walk between positions (2026-10-20 whole-house 360): turn toward the spot, step in (zoom), fade, arrive, zoom back
+let walking = false;
+function anim(ms, f) { return new Promise(r => { const t0 = performance.now(); const step = t => { const k = Math.min(1, (t - t0) / ms); f(k * k * (3 - 2 * k)); need = true; k < 1 ? requestAnimationFrame(step) : r(); }; requestAnimationFrame(step); }); }
+async function walkTo(p) {
+  if (p === st.pos || walking || !M.have.includes(`${p}_${st.pal}`)) return;
+  walking = true;
+  try {
+    const d = dirTo(st.pos, p), y0 = st.yaw, dy = ((d.yaw - y0) % 360 + 540) % 360 - 180, f0 = st.fov, p0 = st.pitch, fz = f0 * 0.55;
+    const load = textureFor(`${p}_${st.pal}`).catch(() => null);
+    await anim(500, k => { st.yaw = y0 + dy * k; st.pitch = p0 + (-4 - p0) * k; st.fov = f0 + (fz - f0) * k; });
+    canvas.style.transition = "opacity .2s"; canvas.style.opacity = "0.2";
+    await Promise.all([load, new Promise(r => setTimeout(r, 200))]);
+    await show(p, st.pal);
+    canvas.style.opacity = "1";
+    await anim(450, k => { st.fov = fz + (f0 - fz) * k; });
+  } finally { walking = false; canvas.style.opacity = "1"; }
 }
 function mark(pal, on) { const b = document.querySelector(`.pal[data-p="${pal}"]`); if (b) b.classList.toggle("load", on); }
 let preloading = false;
@@ -219,7 +236,7 @@ const D2R = Math.PI / 180;
 function dirTo(from, to) {      // plan points in PDF pt: image centre = -y, right = +x
   const a = M.positions[from].pt, b = M.positions[to].pt, dx = b[0] - a[0], dy = b[1] - a[1];
   const dist = Math.hypot(dx, dy) * M.inPerPt;
-  return {yaw: Math.atan2(dx, -dy) / D2R, pitch: -Math.atan2(M.eye, dist) / D2R};
+  return {yaw: Math.atan2(dx, -dy) / D2R, pitch: -Math.atan2(M.positions[from].z || M.eye, dist) / D2R};
 }
 function project(yaw, pitch, W, H, tx, ty) {
   const ly = (yaw - st.yaw) * D2R, lp = pitch * D2R;
@@ -233,12 +250,13 @@ function placeHots(W, H, tx, ty) {
   const box = $("hots"); box.innerHTML = "";
   for (const p of Object.keys(M.positions)) {
     if (p === st.pos) continue;
-    if (M.positions[st.pos].links && !M.positions[st.pos].links.includes(p)) continue;   // whole house: only reachable neighbours
+    if (M.positions[st.pos].links && !M.positions[st.pos].links.includes(p)) continue;
+    if (!M.have.includes(`${p}_${st.pal}`)) continue;                                   // not rendered yet   // whole house: only reachable neighbours
     const d = dirTo(st.pos, p), s = project(d.yaw, d.pitch, W, H, tx, ty);
     if (!s || s[0] < -40 || s[0] > W + 40 || s[1] < 0 || s[1] > H) continue;
     const e = document.createElement("div"); e.className = "hot"; e.style.left = s[0] + "px"; e.style.top = s[1] + "px";
     e.innerHTML = `<div class="ring"></div><span>${M.positions[p].name}</span>`;
-    e.onclick = ev => { ev.stopPropagation(); show(p, st.pal); };
+    e.onclick = ev => { ev.stopPropagation(); walkTo(p); };
     box.appendChild(e);
   }
 }
@@ -258,7 +276,7 @@ function drawMap() {
     s += `<g class="dot" data-k="${k}"><circle cx="${x}" cy="${y}" r="${k === st.pos ? 15 : 12}" fill="${k === st.pos ? "#d8b06a" : "#fff"}" stroke="#222" stroke-width="3"/><text x="${x}" y="${y + 5}" font-size="15" text-anchor="middle" fill="#222" font-weight="700">${P.short}</text></g>`;
   }
   svg.innerHTML = s;
-  svg.querySelectorAll(".dot").forEach(g => g.onclick = () => show(g.dataset.k, st.pal));
+  svg.querySelectorAll(".dot").forEach(g => g.onclick = () => walkTo(g.dataset.k));
 }
 $("map").ondblclick = () => $("map").classList.toggle("min");
 // ---------- info panel ----------
