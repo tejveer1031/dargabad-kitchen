@@ -19,7 +19,7 @@ button:hover,a.btn:hover{border-color:rgba(255,255,255,.35)}
 a.btn{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 10px;min-height:32px;box-sizing:border-box;text-decoration:none;display:inline-flex;align-items:center}
 [hidden]{display:none!important}
 button:disabled{opacity:.35;cursor:not-allowed}
-#bottom{position:absolute;left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end}
+#bottom{position:absolute;left:max(10px,env(safe-area-inset-left,0px));right:max(10px,env(safe-area-inset-right,0px));bottom:calc(8px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;align-items:flex-end;pointer-events:none}#bottom>*{pointer-events:auto}/* 2026-10-22: the strip grows as tall as the minimap (portrait bathroom map = 412 px) and was swallowing the drag */
 #pals{display:flex;gap:6px;overflow-x:auto;padding:6px;flex:1;min-width:0;scrollbar-width:thin}
 .pal{flex:0 0 auto;display:flex;align-items:center;gap:7px;padding:5px 9px 5px 5px;border-radius:9px;border:1px solid transparent;background:transparent;text-align:left;min-height:44px}
 .pal .sq{width:34px;height:34px;border-radius:6px;overflow:hidden;display:grid;grid-template-rows:1fr 1fr;border:1px solid rgba(255,255,255,.25);flex:0 0 auto}
