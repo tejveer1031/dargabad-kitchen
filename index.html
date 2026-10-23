@@ -42,6 +42,9 @@ button:disabled{opacity:.35;cursor:not-allowed}
 .hot{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;pointer-events:auto}
 .hot .ring{width:34px;height:34px;border-radius:50%;border:2px solid #fff;background:rgba(216,176,106,.55);box-shadow:0 0 0 3px rgba(0,0,0,.25)}
 .hot span{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:2px 7px;font-size:11.5px;white-space:nowrap}
+.hot.door .ring{width:44px;height:44px;background:rgba(216,176,106,.85);animation:doorpulse 1.6s ease-in-out infinite}
+.hot.door span{font-size:13px;font-weight:700;border-color:#d8b06a}
+@keyframes doorpulse{0%,100%{box-shadow:0 0 0 3px rgba(0,0,0,.25),0 0 0 0 rgba(216,176,106,.7)}50%{box-shadow:0 0 0 3px rgba(0,0,0,.25),0 0 0 12px rgba(216,176,106,0)}}
 #info{position:absolute;right:max(10px,env(safe-area-inset-right,0px));top:calc(56px + env(safe-area-inset-top,0px));width:min(360px,calc(100vw - 20px));max-height:calc(100vh - 210px);overflow:auto;padding:10px 12px;display:none}
 #info.on{display:block}
 #info h3{margin:0 0 6px;font-size:13px}
@@ -129,7 +132,8 @@ if (gl) {
 const aniso = gl && (gl.getExtension("EXT_texture_filter_anisotropic") || gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic"));
 async function textureFor(k) {
   if (texCache.has(k)) { const t = texCache.get(k); texCache.delete(k); texCache.set(k, t); return t; }
-  const wantHi = !!(gl && MAXT >= 8192 && M.hi && M.hi.includes(k) && location.protocol !== "file:");
+  const desk = !!(window.matchMedia && matchMedia("(pointer: fine)").matches) && !(navigator.deviceMemory && navigator.deviceMemory < 8);   // 2026-10-23: 8K only on desktop-class devices
+  const wantHi = !!(gl && desk && MAXT >= 8192 && M.hi && M.hi.includes(k) && location.protocol !== "file:");
   const uri = wantHi ? await fetchPano(k, true).catch(() => fetchPano(k, false)) : await fetchPano(k, false);
   const img = new Image(); img.src = uri; await img.decode();
   let src = img;
@@ -254,10 +258,11 @@ function placeHots(W, H, tx, ty) {
     if (p === st.pos) continue;
     if (M.positions[st.pos].links && !M.positions[st.pos].links.includes(p)) continue;
     if (!M.have.includes(`${p}_${st.pal}`)) continue;                                   // not rendered yet   // whole house: only reachable neighbours
-    const d = dirTo(st.pos, p), s = project(d.yaw, d.pitch, W, H, tx, ty);
+    const d = dirTo(st.pos, p), s = project(d.yaw, Math.max(d.pitch, -32), W, H, tx, ty);   // 2026-10-23: a near target (e.g. the bathroom from by its door) stays on screen
     if (!s || s[0] < -40 || s[0] > W + 40 || s[1] < 0 || s[1] > H) continue;
-    const e = document.createElement("div"); e.className = "hot"; e.style.left = s[0] + "px"; e.style.top = s[1] + "px";
-    e.innerHTML = `<div class="ring"></div><span>${M.positions[p].name}</span>`;
+    const e = document.createElement("div"); const rFrom = M.positions[st.pos].room, rTo = M.positions[p].room, door = !!(rFrom && rTo && rFrom !== rTo);
+    e.className = door ? "hot door" : "hot"; e.style.left = s[0] + "px"; e.style.top = s[1] + "px";
+    e.innerHTML = `<div class="ring"></div><span>${door ? "Enter " + rTo.toLowerCase() + " › " : ""}${M.positions[p].name}</span>`;
     e.onclick = ev => { ev.stopPropagation(); walkTo(p); };
     box.appendChild(e);
   }
@@ -273,8 +278,12 @@ function drawMap() {
   const h2 = Math.min(80, Math.atan(Math.tan(st.fov * D2R / 2) * canvas.clientWidth / canvas.clientHeight) / D2R);
   const r = 120, a1 = (st.yaw - h2) * D2R, a2 = (st.yaw + h2) * D2R;
   s += `<path d="M${x0},${y0} L${x0 + r * Math.sin(a1)},${y0 - r * Math.cos(a1)} A${r},${r} 0 0 1 ${x0 + r * Math.sin(a2)},${y0 - r * Math.cos(a2)} Z" fill="rgba(216,176,106,.35)" stroke="#d8b06a" stroke-width="2"/>`;
+  const used = [];
   for (const [k, P] of Object.entries(M.positions)) {
-    const [x, y] = pp(P.pt);
+    if (!M.have.includes(`${k}_${st.pal}`)) continue;            // 2026-10-23: no dot for a point that has no picture yet (clicking it did nothing)
+    let [x, y] = pp(P.pt);
+    while (used.some(u => Math.hypot(u[0] - x, u[1] - y) < 20)) x += 22;   // same spot (middle / bird's-eye): side by side
+    used.push([x, y]);
     s += `<g class="dot" data-k="${k}"><circle cx="${x}" cy="${y}" r="${k === st.pos ? 15 : 12}" fill="${k === st.pos ? "#d8b06a" : "#fff"}" stroke="#222" stroke-width="3"/><text x="${x}" y="${y + 5}" font-size="15" text-anchor="middle" fill="#222" font-weight="700">${P.short}</text></g>`;
   }
   svg.innerHTML = s;
