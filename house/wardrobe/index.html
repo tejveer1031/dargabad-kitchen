@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wardrobe M03 Model</title>
+<style>
+  :root { --bg: #f4efe7; --fg: #2b2118; --muted: #6f6152; --walnut: #6b3f22; --bronze: #9a6a3a; --card: #fffaf3; --line: #ddd0bf; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1d1712; --fg: #f1e7da; --muted: #b9a891; --walnut: #c58a5c; --bronze: #d6a066; --card: #28201a; --line: #3d3127; color-scheme: dark } }
+  * { box-sizing: border-box }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+         padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 30px }
+  h1 { font: 600 1.45rem/1.2 Georgia, "Times New Roman", serif; margin: 0 0 4px; text-wrap: balance }
+  .sub { color: var(--muted); margin: 0 0 14px; font-size: .92rem }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px }
+  .tab { border: 1px solid var(--line); background: var(--card); color: var(--fg); padding: 9px 14px; border-radius: 8px; cursor: pointer; font-size: .95rem }
+  .tab[aria-pressed="true"] { background: var(--walnut); border-color: var(--walnut); color: #fff }
+  #drawerBtn { margin-left: auto } #mirrorBtn { margin-left: 0 }
+  .mirror { border: 0; background: var(--bronze); color: #1d1208; font-weight: 700; font-size: 1.05rem; padding: 12px 22px; border-radius: 999px; cursor: pointer;
+            box-shadow: 0 2px 0 rgba(0,0,0,.15) }
+  .mirror[aria-pressed="true"] { background: var(--walnut); color: #fff }
+  .stage { display: grid; grid-template-columns: 1fr; gap: 12px }
+  .stage.cmp { grid-template-columns: 1fr 1fr }
+  @media (max-width: 760px) { .stage.cmp { grid-template-columns: 1fr } .mirror { margin-left: 0 } }
+  figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; min-width: 0 }
+  figure img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; background: #ccc }
+  figcaption { padding: 8px 12px; font-size: .9rem; color: var(--muted) }
+  .row2 { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px }
+  label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; color: var(--muted) }
+  .notes { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px }
+  .notes figure img { aspect-ratio: auto }
+  .status { margin-top: 14px; padding: 10px 12px; border-left: 4px solid var(--bronze); background: var(--card); border-radius: 6px; font-size: .92rem; max-width: 70ch }
+</style>
+</head>
+<body>
+<!-- wardrobe-link 2026-10-24 -->
+<p style="margin:0 0 10px"><a href="../" style="color:inherit;font-weight:600">&larr; House 360</a></p>
+<h1>Wardrobe M03 &mdash; our 3D model</h1>
+<p class="sub">Sculpted walnut sliding wardrobe + mirrored corner storage, built in the measured bedroom. <span id="kind">Quick preview, for your review.</span></p>
+<div class="bar" role="toolbar" aria-label="Wardrobe views">
+  <button class="tab" data-v="C">Closed</button>
+  <button class="tab" data-v="L">Left storage</button>
+  <button class="tab" data-v="R">Right storage</button>
+  <button class="tab" data-v="M">Mirror storage</button>
+  <button class="mirror" id="drawerBtn" aria-pressed="false">Open drawers</button>
+  <button class="mirror" id="mirrorBtn" aria-pressed="false">Open mirror</button>
+</div>
+<div class="stage" id="stage">
+  <figure><img id="model" alt="Our 3D model of the wardrobe"><figcaption id="cap"></figcaption></figure>
+  <figure id="refFig" hidden><img id="ref" alt="Codex M03 target picture"><figcaption>M03 target (Codex picture: look and intended opening only, not dimensions)</figcaption></figure>
+</div>
+<div class="row2">
+  <label><input type="checkbox" id="cmp"> Show the M03 target beside it</label>
+  <span style="color:var(--muted)">Keys: &larr; &rarr; switch views, D opens/closes the drawers, M the mirror.</span>
+</div>
+<div class="notes" id="extras"></div>
+<p class="status" id="status"></p>
+<script>
+const V = {"states": {"C": {"img": "img/BRMC.jpg", "ref": "img/01-closed.jpg", "label": "Closed", "note": "both sliding doors and both mirror doors closed"}, "L": {"img": "img/BRML.jpg", "ref": "img/02-left-open.jpg", "label": "Left storage", "note": "doors parked over the right side; 3 folded-clothes levels, tray, drawers, bedding loft"}, "R": {"img": "img/BRMR.jpg", "ref": "img/03-right-open.jpg", "label": "Right storage", "note": "doors parked over the left side; hanging rail, shelf, 4 drawers, bedding loft"}, "M": {"img": "img/BRMM.jpg", "ref": "img/04-mirror-open.jpg", "label": "Mirror storage", "note": "both mirror doors open; 6 tapered shelves behind them"}, "D": {"img": "img/BRMD.jpg", "ref": "img/02-left-open.jpg", "label": "Left storage - drawers open", "note": "left drawers pulled out in steps (tray at the top)"}, "E": {"img": "img/BRME.jpg", "ref": "img/03-right-open.jpg", "label": "Right storage - drawers open", "note": "right drawers pulled out in steps"}}, "extras": [{"img": "img/BRMTX.jpg", "label": "Top view, left side open, every left drawer fully out, mirror doors open (clearance check)"}, {"img": "img/BRMTY.jpg", "label": "Top view, right side open, every right drawer fully out, mirror doors open (clearance check)"}, {"img": "img/BRMG.jpg", "label": "Close-up: sculpted joint grip, bronze-lined"}, {"img": "img/BRMH.jpg", "label": "Close-up: mirror door hinges (5 per door)"}], "kind": "Final renders, 3840 x 2880 (the four states); the drawer close-ups, top views and details below are the quick previews you reviewed.", "status": "Passed by Tejveer 2026-10-24 ('yes wardrobe passed next'). Look and operation only: sizes, hardware and finishes are still PROPOSED."};
+const order = ["C", "L", "R", "M"];
+const bay = { L: "L", D: "L", R: "R", E: "R" };            // drawer views D / E belong to the left / right storage tab
+let cur = "C";
+const $ = id => document.getElementById(id);
+function show(v) {
+  cur = v; const d = V.states[v];
+  $("model").src = d.img; $("model").alt = "Our model: " + d.label; $("cap").textContent = d.label + " - " + d.note;
+  $("ref").src = d.ref;
+  const tabv = bay[v] || v;
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.v === tabv)));
+  const open = v === "M"; $("mirrorBtn").textContent = open ? "Close mirror" : "Open mirror"; $("mirrorBtn").setAttribute("aria-pressed", String(open));
+  const dr = v === "D" || v === "E"; $("drawerBtn").textContent = dr ? "Close drawers" : "Open drawers"; $("drawerBtn").setAttribute("aria-pressed", String(dr));
+  try { localStorage.setItem("m03view", v) } catch (e) {}
+}
+document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => show(b.dataset.v)));
+$("mirrorBtn").addEventListener("click", () => show(cur === "M" ? "C" : "M"));
+$("drawerBtn").addEventListener("click", () => {             // open / close the drawers of the storage on view (from Closed or Mirror: the left storage)
+  const next = { L: "D", D: "L", R: "E", E: "R", C: "D", M: "D" }[cur]; show(next);
+});
+$("cmp").addEventListener("change", e => { $("refFig").hidden = !e.target.checked; $("stage").classList.toggle("cmp", e.target.checked) });
+document.addEventListener("keydown", e => {
+  const ci = order.indexOf(bay[cur] || cur);
+  if (e.key === "ArrowRight") show(order[(ci + 1) % 4]);
+  else if (e.key === "ArrowLeft") show(order[(ci + 3) % 4]);
+  else if (e.key === "d" || e.key === "D") $("drawerBtn").click();
+  else if (e.key === "m" || e.key === "M") $("mirrorBtn").click();
+});
+for (const x of V.extras) {
+  const f = document.createElement("figure"); const i = document.createElement("img"); i.src = x.img; i.alt = x.label; i.loading = "lazy";
+  const c = document.createElement("figcaption"); c.textContent = x.label; f.append(i, c); $("extras").append(f);
+}
+$("kind").textContent = V.kind; $("status").textContent = V.status;
+let start = "C"; try { start = localStorage.getItem("m03view") || "C" } catch (e) {}
+show(V.states[start] ? start : "C");
+</script>
+</body>
+</html>
