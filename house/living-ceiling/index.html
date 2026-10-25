@@ -1,69 +1,53 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Living Ceiling Preview</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Living Ceiling Proposal</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
-:root{--bg:#f3eee6;--fg:#2a231c;--muted:#6d6254;--card:#fffaf2;--line:#ddd2c2;--acc:#8a6a3d}
-@media (prefers-color-scheme:dark){:root{--bg:#1c1814;--fg:#efe6da;--muted:#b3a693;--card:#26201a;--line:#3b3229;--acc:#d2a76a;color-scheme:dark}}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 "Segoe UI",system-ui,sans-serif;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px));padding-block:18px 30px}
-h1{font:600 1.4rem/1.2 Georgia,serif;margin:0 0 4px;text-wrap:balance}h2{font:600 1.15rem/1.3 Georgia,serif;margin:24px 0 4px}
-.sub{color:var(--muted);margin:0 0 12px;font-size:.92rem;max-width:80ch}
-.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}
-button{border:1px solid var(--line);background:var(--card);color:var(--fg);padding:9px 14px;border-radius:8px;cursor:pointer;font:inherit}
-button[aria-pressed=true]{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc);font-weight:600}
-.slider{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0 10px}.slider input{width:min(420px,70vw)}
-.stack{position:relative;max-width:1100px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#000}
-.stack img{display:block;width:100%;height:auto}.stack .top{position:absolute;inset:0}
-.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px;max-width:1500px}
-.pair figure,.plan{margin:0;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden;max-width:1100px}
-.pair img,.plan img{display:block;width:100%;height:auto}
-figcaption{padding:8px 12px;font-size:.88rem;color:var(--muted)}.note{color:var(--muted);font-size:.9rem;max-width:80ch}
-.tbl{overflow-x:auto}table{border-collapse:collapse;margin:8px 0 14px;background:var(--card)}th,td{border:1px solid var(--line);padding:6px 12px;text-align:left}
-</style>
-</head><body><!-- house-back 2026-10-24 -->
+:root{--bg:#f6f3ee;--card:#fffdf9;--fg:#2a2520;--mute:#76695c;--line:#e2d9cc;--acc:#a8652a;--warm:#c7781f;--cool:#4f6f8f;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1916;--card:#25221e;--fg:#ece5da;--mute:#a99c8c;--line:#3a352e;--acc:#d9934f;--warm:#e39a45;--cool:#8fb0cf;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1b1916;--card:#25221e;--fg:#ece5da;--mute:#a99c8c;--line:#3a352e;--acc:#d9934f;--warm:#e39a45;--cool:#8fb0cf;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:1.6rem;margin:0 0 4px;text-wrap:balance} h2{font-size:1.15rem;margin:28px 0 10px;text-wrap:balance}
+.tag{display:inline-block;font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:4px;padding:1px 7px;margin-bottom:8px}
+.lead{color:var(--mute);max-width:70ch;margin:6px 0 0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--bg);padding:10px 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--line)}
+.bar button{font:inherit;padding:7px 16px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer}
+.bar button[aria-pressed=true]#k27{background:var(--warm);border-color:var(--warm);color:#fff}
+.bar button[aria-pressed=true]#k40{background:var(--cool);border-color:var(--cool);color:#fff}
+.bar span{color:var(--mute);font-size:.85rem}
+.shot{margin:14px 0 0;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.shot img{display:block;width:100%;height:auto} .shot figcaption{padding:8px 12px;color:var(--mute);font-size:.9rem}
+.sheets{display:grid;gap:14px} .sheets a{display:block}
+.table{overflow-x:auto} table{border-collapse:collapse;width:100%;min-width:560px;background:var(--card);border:1px solid var(--line)}
+td{border-top:1px solid var(--line);padding:7px 10px;vertical-align:top} td.src{color:var(--mute);font-size:.85rem;white-space:nowrap}
+ul{padding-left:20px;max-width:80ch} li{margin:4px 0}
+.note{background:var(--card);border-left:3px solid var(--acc);padding:10px 14px;border-radius:4px;max-width:80ch}
+</style></head><body>
+<div class="wrap">
+<span class="tag">Proposed - for your approval</span>
+<!-- house-back 2026-10-24 -->
 <p style="margin:0 0 10px"><a href="../" style="color:inherit;font-weight:600">&larr; House 360</a></p>
-<h1>Living room ceiling &mdash; our model laid over the approved pictures</h1>
-<p class="sub" id="kind"></p>
-<div class="bar" role="toolbar" aria-label="Angle, light and layout">
-  <button class="tab" data-a="ceiling">Ceiling</button><button class="tab" data-a="front">Front</button><button class="tab" data-a="reverse">Reverse</button>
-  <button id="mode">Switch to White 4000K</button><button id="lay">Side by side</button><button id="trace" hidden>Show traced curves</button>
+<h1>Living room ceiling - fresh design</h1>
+<p class="lead">New design drawn on the real room plan (Codex's curved ceiling is rejected). The drawings, the 3D model and these pictures all come from one set of arcs. Fast previews: the 4K renders follow only after you pass it.</p>
+<div class="bar" role="group" aria-label="Cove light colour"><button id="k27" aria-pressed="true">Warm 2700 K</button><button id="k40" aria-pressed="false">White 4000 K</button><span>same coves, same camera, exposure and white balance</span></div>
+<h2>3D model previews</h2>
+    <figure class="shot r16x9"><img data-v="LVC2F" src="img/LVC2F_K27.jpg" alt="Room view from the bedroom-door passage, toward the sofa wall" loading="lazy"><figcaption>Room view from the bedroom-door passage, toward the sofa wall</figcaption></figure>
+    <figure class="shot r16x9"><img data-v="LVC2E" src="img/LVC2E_K27.jpg" alt="Room view from just inside the main door" loading="lazy"><figcaption>Room view from just inside the main door</figcaption></figure>
+    <figure class="shot r4x3"><img data-v="LVCU2" src="img/LVCU2_K27.jpg" alt="Straight up from under the middle of the ceiling (whole feature). Looking up, so left and right are swapped compared with the plan: the chandelier shows on the left, the fan on the right; the sofa wall is at the top" loading="lazy"><figcaption>Straight up from under the middle of the ceiling (whole feature). Looking up, so left and right are swapped compared with the plan: the chandelier shows on the left, the fan on the right; the sofa wall is at the top</figcaption></figure>
+<h2>Dimensioned plan and sections</h2>
+<div class="sheets"><a href="img/1-PLAN-PROPOSED.png"><figure class="shot"><img src="img/1-PLAN-PROPOSED.png" alt="Dimensioned ceiling plan" loading="lazy"><figcaption>Plan: sizes, arc centres and radii, distances to walls, stair and AC, fixture positions (tap to open full size)</figcaption></figure></a>
+<a href="img/2-SECTIONS-PROPOSED.png"><figure class="shot"><img src="img/2-SECTIONS-PROPOSED.png" alt="Sections and cove detail" loading="lazy"><figcaption>Sections A-A and B-B, cove detail, levels and space for framing (tap to open full size)</figcaption></figure></a></div>
+<h2>Numbers</h2>
+<div class="table"><table><tr><td>Outer tray</td><td>13&#x27;-4&quot; x 10&#x27;-8&quot;, 8 tangent arcs (corners R 2&#x27;-8&quot;)</td><td class=src>proposed</td></tr><tr><td>Inner recess</td><td>11&#x27;-4&quot; x 8&#x27;-0&quot;, 8 tangent arcs (corners R 2&#x27;-4&quot;), set 6&quot; toward the sofa wall</td><td class=src>proposed</td></tr><tr><td>Band between them</td><td>10&quot; sofa side, 1&#x27;-0&quot; ends, 1&#x27;-10&quot; stair side</td><td class=src>proposed</td></tr><tr><td>Slab soffit</td><td>11&#x27;-0&quot; above floor</td><td class=src>owner (not site-measured)</td></tr><tr><td>Plain ceiling (circulation)</td><td>10&#x27;-0&quot; - drop 1&#x27;-0&quot;</td><td class=src>proposed</td></tr><tr><td>Band</td><td>10&#x27;-4&quot; - drop 8&quot;</td><td class=src>proposed</td></tr><tr><td>Recess</td><td>10&#x27;-8&quot; - drop 4&quot; (4&quot; framing + board minimum)</td><td class=src>proposed</td></tr><tr><td>Coves</td><td>2 x 4&quot; steps, LED 3 1/2&quot; behind a lip in a 6&quot; pocket; about 43 ft + 34 ft of strip</td><td class=src>proposed</td></tr><tr><td>Fan + chandelier</td><td>5&#x27;-0&quot; and 11&#x27;-0&quot; along the sofa wall, both 7&#x27;-4&quot; out, 6&#x27;-0&quot; apart</td><td class=src>owner (DECIDED, unchanged)</td></tr><tr><td>Fan blades / chandelier bottom</td><td>9&#x27;-7&quot; / 7&#x27;-9&quot; (model stand-ins, products not chosen)</td><td class=src>proposed</td></tr><tr><td>Distance to walls</td><td>nearest 1&#x27;-9 1/2&quot; (toilet corner); sofa wall 2&#x27;-0&quot;; stair void 4&#x27;-6 7/8&quot;; AC 1&#x27;-2 1/4&quot;</td><td class=src>measured on the model</td></tr><tr><td>Camera / light</td><td>same camera, exposure and white balance (5500 K) for 2700 K and 4000 K; chandelier off</td><td class=src>render setting</td></tr></table></div>
+<h2>Checked on the built model</h2>
+<ul><li>Built model edges vs the drawing&#x27;s arcs: max 0.03&quot; off</li><li>LED strips seen from 255 eye positions (sitting, standing, cameras): 0 of 214710 sight lines</li><li>Fan sweep 7 7/8&quot; inside the recess edge; chandelier 10 3/4&quot;; 2&#x27;-3 5/8&quot; clear between them</li><li>Every level leaves at least 4&quot; under the slab for GI framing + 12.5 mm board (allowance; contractor to confirm)</li><li>Curves join smoothly (no corners, no gaps); no extra ledges: two steps, two coves</li></ul>
+<h2>Not measured / not chosen yet</h2>
+<p class="note">Slab height 11'-0" is your figure, not a site measurement. Fan, chandelier, LED strip and driver products are not chosen: the fixtures in the pictures are model stand-ins. The 4" framing space is a planning allowance; the ceiling contractor should confirm it before the levels are fixed.</p>
 </div>
-<div id="over">
-  <div class="slider"><span>Approved</span><input id="fade" type="range" min="0" max="100" value="50" aria-label="Fade between approved and our model"><span>Our model</span></div>
-  <div class="stack"><img id="ref" alt="Approved picture"><img id="ours" class="top" alt="Our model, same frame"><img id="tr" class="top" src="img/trace05.png" alt="" hidden></div>
-</div>
-<div id="side" class="pair" hidden><figure><img id="oursS" alt="Our model"><figcaption>Our model</figcaption></figure><figure><img id="refS" alt="Approved picture"><figcaption>Approved picture (appearance only)</figcaption></figure></div>
-<p class="note" id="how"></p>
-<p class="note">Chandelier off in all comparison views, as in the approved pictures; warm and white use the same camera, exposure and white balance (only the two coves change colour). Fan 5'-0" and chandelier 11'-0" along the back wall, both 7'-4" out, 6'-0" apart (your choice).</p>
-<h2>Close-ups: where the crescent meets the middle curve</h2><p class='sub'>Seated eye height, aimed at the two crescent joins (the bright-spot check). White 4000K.</p><div class='pair'><figure><img src='img/j_LVCJ1_K40.jpg' alt='crescent join close-up' loading='lazy'><figcaption>Upper join</figcaption></figure><figure><img src='img/j_LVCJ2_K40.jpg' alt='crescent join close-up' loading='lazy'><figcaption>Lower join</figcaption></figure></div><h2>Measured: model edges against the traced curves</h2>
-<p class="sub">Codex traced the three curves from approved picture 05. The ceiling uses that exact shape at our room's size (one uniform scale,
-no stretching). Our model's built edges, drawn back into picture 05's frame, were measured against the trace with Codex's checker.
-This shows the traced outline is kept; it does not certify construction dimensions, ceiling depth or the final look. Two parts of the
-trace are uncertain in the picture itself (the middle curve at the lower left, the top tip of the crescent), and the crescent's top tip
-is joined to the middle curve by a smooth curve I drew.</p>
-<div class="tbl"><table><thead><tr><th>Curve</th><th>Worst gap</th><th>Average gap</th></tr></thead><tbody><tr><td>Outer edge (blue)</td><td>0.25 px</td><td>0.12 px</td></tr><tr><td>Middle edge (pink)</td><td>0.00 px</td><td>0.00 px</td></tr><tr><td>Crescent edge (green)</td><td>0.00 px</td><td>0.00 px</td></tr></tbody></table></div>
-
-<figure class="plan"><img src="img/plan-section.jpg" alt="Dimensioned ceiling plan and section, proposed" loading="lazy"><figcaption>Dimensioned plan and section (curves locked to the approved picture; heights and LED positions PROPOSED; 11'-0" slab owner-stated).</figcaption></figure>
 <script>
-const V = {"kind": "For your approval: the ceiling only, our 3D model drawn in the approved picture's own frame. Slide between Approved and Our model; Warm / White switches the light; 'Show traced curves' draws Codex's trace of the approved curves. The ceiling is picture 05's exact shape at our room's size. Still different: warm reads less amber than the approved warm picture; our ceiling is a little brighter; the room walls differ (the approved picture's room is generated, not our room). Front and reverse views come only after you approve this.", "angles": {"ceiling": {"label": "Ceiling - straight up", "how": "our ceiling drawn in the approved picture's own frame: the curves should sit exactly on top", "white": {"ours": "img/m_LVCREF_K40.jpg", "ref": "img/a_05-ceiling-white-4000K.jpg", "w": 1448, "h": 1086}, "warm": {"ours": "img/m_LVCREF_K27.jpg", "ref": "img/a_06-ceiling-warm-2700K.jpg", "w": 1448, "h": 1086}}}};
-let a = Object.keys(V.angles)[0], m = "warm", lay = "over", tr = false;
-const $ = id => document.getElementById(id);
-function show(){
-  const e = V.angles[a], s = e[m];
-  $("ref").src = s.ref; $("ours").src = s.ours; $("refS").src = s.ref; $("oursS").src = s.ours;
-  $("ours").style.opacity = $("fade").value / 100;
-  $("over").hidden = lay !== "over"; $("side").hidden = lay !== "side";
-  $("trace").hidden = a !== "ceiling"; $("tr").hidden = !(tr && a === "ceiling" && lay === "over");
-  $("trace").textContent = tr ? "Hide traced curves" : "Show traced curves";
-  $("how").textContent = e.label + ": " + e.how + ".";
-  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.a === a)));
-  $("mode").textContent = m === "warm" ? "Switch to White 4000K" : "Switch to Warm 2700K";
-  $("lay").textContent = lay === "over" ? "Side by side" : "Overlay";
-}
-document.querySelectorAll(".tab").forEach(b => { if (!V.angles[b.dataset.a]) b.hidden = true; b.onclick = () => { a = b.dataset.a; show(); }; });
-$("mode").onclick = () => { m = m === "warm" ? "white" : "warm"; show(); };
-$("lay").onclick = () => { lay = lay === "over" ? "side" : "over"; show(); };
-$("trace").onclick = () => { tr = !tr; show(); };
-$("fade").oninput = () => { $("ours").style.opacity = $("fade").value / 100; };
-$("kind").textContent = V.kind;
-show();
-</script></body></html>
+const set = k => { document.querySelectorAll("img[data-v]").forEach(i => i.src = "img/" + i.dataset.v + "_" + k + ".jpg");
+  document.getElementById("k27").setAttribute("aria-pressed", k === "K27"); document.getElementById("k40").setAttribute("aria-pressed", k === "K40");
+  try { localStorage.setItem("lvc2k", k); } catch (e) {} };
+document.getElementById("k27").onclick = () => set("K27"); document.getElementById("k40").onclick = () => set("K40");
+try { const k = localStorage.getItem("lvc2k"); if (k === "K40") set("K40"); } catch (e) {}
+</script>
+</body></html>
